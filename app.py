@@ -5,8 +5,15 @@ from flask import Flask, request, render_template
 from flask_bootstrap import Bootstrap
 
 
+from flask_marshmallow import Marshmallow
+from flask_smorest import Api, Blueprint, abort
+
+
+
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
+ma = Marshmallow()
 
 
 def create_app():
@@ -23,7 +30,7 @@ def create_app():
         return render_template('user.html', name=name)
 
     @app.route('/professor')
-    def my_api_route():
+    def profesor_api_route():
         return {
             "name": "Adrien",
             "birthday": "02 January",
@@ -36,10 +43,22 @@ def create_app():
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
     db.init_app(app)
+    ma.init_app(app)
 
     from tasks.models import Task
 
     migrate = Migrate(app, db)
+
+    # @app.route('/todoz')
+    # def my_api_route():
+    #     tasks = Task.query.all()
+    #     return {"results": [{field: getattr(task, field) for field in Task.__table__.columns.keys()}for task in tasks]}
+
+    @app.route('/todoz')
+    def my_api_route():
+        from tasks.serializers import TaskSchema
+        tasks = Task.query.all()
+        return {"results": TaskSchema(many=True).dump(tasks)}
 
     return app
 
