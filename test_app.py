@@ -21,6 +21,13 @@ def test_index_user():
     result = response.data.decode("utf-8")
     assert "Hello, adrien" in result
 
+def test_user_template():
+    client = app.test_client()
+    response = client.get("/user/adrien")
+    template = app.jinja_env.get_template('user.html')
+    assert template.render(name="adrien") == response.get_data(as_text=True)
+
 test_app()
 test_index_route()
 test_index_user()
+test_user_template()

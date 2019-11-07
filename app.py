@@ -1,16 +1,18 @@
-from flask import Flask
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    return '<h1>ECM Bonjour</h1>'
+    user_agent = request.headers.get('User-Agent')
+    return f"<p> Your browser is {user_agent}</p>\n<h1>ECM Bonjour</h1>"
+
+
 
 
 @app.route('/user/<name>')
 def user(name):
-    return f'<h1>Hello, {name}</h1>'
+    return render_template('user.html', name=name)
 
-if __name__ == '__main__':
-    app.run()
+
