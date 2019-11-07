@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>FLASK TEST</title>
-</head>
+{% extends "bootstrap/base.html" %}
+{% block title %}Flask Bonjour{% endblock %}
+{% block navbar %}
+<div class="navbar navbar-fixed-top">
+  <!-- ... -->
+</div>
+{% endblock %}
+{% block content %}<h1>Hello, {{name}}</h1>
+{#<img src="/static/test.jpg" width="500" align="center">#}
+{% endblock %}
 
-<body>
-    <h1>Hello, {{name}}</h1>
-</body>
-
-</html>
