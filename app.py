@@ -16,6 +16,7 @@ db = SQLAlchemy()
 ma = Marshmallow()
 
 
+
 def create_app():
     app = Flask(__name__)
     Bootstrap(app)
@@ -39,11 +40,18 @@ def create_app():
             "friends": ["Amadou", "Mariam"]
         }
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'data.sqlite')}"
-    app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.join(basedir, 'data.sqlite')}"
+    app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = True
+    app.config["OPENAPI_VERSION"] = "3.0.2"
+    app.config["OPENAPI_URL_PREFIX"] = "openapi"
+    app.config["API_VERSION"] = "1"
+    app.config["OPENAPI_SWAGGER_UI_PATH"] = "api"
+    app.config["OPENAPI_SWAGGER_UI_VERSION"] = "3.23.11"
 
     db.init_app(app)
+    api = Api(app)
     ma.init_app(app)
+
 
     from tasks.models import Task
 
@@ -59,6 +67,9 @@ def create_app():
         from tasks.serializers import TaskSchema
         tasks = Task.query.all()
         return {"results": TaskSchema(many=True).dump(tasks)}
+
+    from tasks.views import task_blueprint
+    api.register_blueprint(task_blueprint)
 
     return app
 
